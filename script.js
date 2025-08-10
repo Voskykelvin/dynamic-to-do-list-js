@@ -1,20 +1,31 @@
-// Wait for the DOM to fully load
-document.addEventListener('DOMContentLoaded', () => {
-  // Efficiently select required DOM elements
-  const addButton = document.getElementById('add-task');
-  const taskInput = document.getElementById('task-input');
-  const taskList = document.getElementById('task-list');
+async function fetchUserData() {
+      const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+      const dataContainer = document.getElementById('api-data');
 
-    // 3. Create the addTask Function
-    function addTask() {
-        // ... functionality ...
+      try {
+        const response = await fetch(apiUrl);
+        const users = await response.json();
+
+        // Clear loading message
+        dataContainer.innerHTML = '';
+
+        // Create and append user list
+        const userList = document.createElement('ul');
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = user.name;
+          userList.appendChild(li);
+        });
+
+        dataContainer.appendChild(userList);
+      } catch (error) {
+        // Handle errors
+        dataContainer.innerHTML = '';
+        dataContainer.textContent = 'Failed to load user data.';
+        // Optionally log the error for debugging
+        console.error('Error fetching user data:', error);
+      }
     }
 
-    // 4. Attach Event Listeners
-    addButton.addEventListener('click', addTask);
-    taskInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            addTask();
-        }
-    });
-});
+    // Run after the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', fetchUserData);
